@@ -1,4 +1,4 @@
-package com.hdbank.convertMTtoMXproject.demo;
+package com.hdbank.convertMTtoMXproject.utils;
 
 import gr.datamation.converter.cbpr.CbprTranslator;
 import gr.datamation.converter.cbpr.converters.mt.Mt202Mt205ToPacs009;
@@ -20,41 +20,42 @@ import java.io.UnsupportedEncodingException;
 public class TranslateMtToMx {
 
     public static void main(String... args) {
-        translateMt202ToPacs009_Auto();
-        translateMt202ToPacs009_ExplicitText();
-        translateMt202ToPacs009_ExplicitObject();
+        String s = translateMt202ToPacs009_Auto(validMtMessage);
+        System.out.println(s);
     }
 
-    public static void translateMt202ToPacs009_Auto() {
+    public static String translateMt202ToPacs009_Auto(String mtMessage) {
         String mxMessage = "";
 
         // You have the option to provide the MT message in text format and get back the CBPR+ message in text format.
         // Translator auto detects the translation mapping.
         // In order to handle MT and CBPR+ messages, advice README.md
         try {
-            mxMessage = CbprTranslator.translateMtToMx(validMtMessage);
+            mxMessage = CbprTranslator.translateMtToMx(mtMessage);
         } catch (InvalidMtMessageException e) {
             System.out.println("MT message is invalid");
             e.getValidationErrorList().forEach(System.out::println);
-            return;
+            return null;
         } catch (StopTranslationException e) {
             System.out.println("Translation errors occurred");
             e.getTranslationErrorList().forEach(System.out::println);
-            return;
+            return null;
         } catch (TranslationUnhandledException e) {
             System.out.println("Unexpected error occurred");
             e.printStackTrace();
-            return;
+            return null;
         }
 
         //Validate the Translated message
         try {
             CbprMessageValidationUtils.autoParseAndValidateCbprMessage(mxMessage);
-            System.out.println("Translated Message is: \n" + mxMessage);
+//            System.out.println("Translated Message is: \n" + mxMessage);
         } catch (InvalidMxMessageException e) {
             System.out.println("CBPR+ message is invalid");
             e.getValidationErrorList().forEach(System.out::println);
         }
+
+        return mxMessage;
     }
 
     public static void translateMt202ToPacs009_ExplicitText() {
@@ -136,7 +137,7 @@ public class TranslateMtToMx {
         }
     }
 
-    private static final String validMtMessage1 = "{1:F01AAAABEBBAXXX0000000000}{2:I202CCCCUS33AXXXN}{3:{121:c8b66b47-2bd9-48fe-be90-93c2096f27d2}}{4:\n" +
+    private static final String validMtMessage = "{1:F01AAAABEBBAXXX0000000000}{2:I202CCCCUS33AXXXN}{3:{121:c8b66b47-2bd9-48fe-be90-93c2096f27d2}}{4:\n" +
             ":20:987\n" +
             ":21:090525/123COV\n" +
             ":13C:/SNDTIME/1249+0200\n" +
@@ -148,16 +149,4 @@ public class TranslateMtToMx {
             ":72:/INS/CHASUS33\n" +
             "-}{5:{MAC:75D138E4}{CHK:DE1B0D71FA96}}";
 
-    private static final String validMtMessage = "{1:F01AAAABEBBAXXX0000000000}{2:I202CCCCUS33AXXXN}{3:{121:c8b66b47-2bd9-48fe-be90-93c2096f27d2}}{4:\n" +
-            ":20:P5607186 298\n" +
-            ":21:ABCD/1234567\n" +
-            ":32A:200212EUR39,36\n" +
-            ":52A:/123991234\n" +
-            "CHASFRPP\n" +
-            ":57A:DEUTDEFF\n" +
-            ":58A:/DE99551900000907039999\n" +
-            "DEUTGB2L\n" +
-            ":72:/BNF/Testing of Translation of MT20\n" +
-            "//2 into a pacs.009 Core\n" +
-            "-}";
 }

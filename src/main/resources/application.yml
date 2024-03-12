@@ -16,4 +16,7 @@ spring:
     username: root
     password: admin123
 folder:
-  path: /Users/lamanhhai/hdbank/project/files
+  path:
+    input: /Users/lamanhhai/hdbank/project/files/input
+    output: /Users/lamanhhai/hdbank/project/files/output
+

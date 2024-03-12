@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface FileDataRepository extends JpaRepository<FileData, Long> {
     Optional<FileData> findByName(String fileNane);
+    Optional<FileData> findById(Long id);
 }

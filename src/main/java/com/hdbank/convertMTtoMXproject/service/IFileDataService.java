@@ -7,5 +7,5 @@ import java.io.IOException;
 
 public interface IFileDataService {
     String uploadFile(MultipartFile file) throws IOException;
-    Resource downloadFile(String fileName) throws IOException;
+    Resource downloadFile(Long id) throws IOException;
 }

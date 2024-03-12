@@ -1,4 +1,4 @@
-package com.hdbank.convertMTtoMXproject.demo;
+package com.hdbank.convertMTtoMXproject.utils;
 
 import gr.datamation.converter.cbpr.CbprTranslator;
 import gr.datamation.converter.cbpr.converters.mx.Pacs009ToMt202Mt205;
