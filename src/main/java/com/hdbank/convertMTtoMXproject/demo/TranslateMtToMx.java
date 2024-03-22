@@ -1,14 +1,21 @@
 package com.hdbank.convertMTtoMXproject.demo;
 
+import com.hdbank.convertMTtoMXproject.iso2202.pacs00900111.Document;
+import com.hdbank.convertMTtoMXproject.iso2202.pacs00900111.GroupHeader113;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import java.io.FileOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class TranslateMtToMx {
 
     Logger logger = LoggerFactory.getLogger(TranslateMtToMx.class);
-    private static final String messageMt202 = "{1:F01AAAABEBBAXXX0000000000}{2:I202CCCCUS33AXXXN}{1:F01COPZBEB0AXXX0377002682}{3:{121:c8b66b47-2bd9-48fe-be90-93c2096f27d2}}{4:\n" +
+    private static final String messageMt202 = "{1:F01AAAABEBBAXXX0000000000}{2:I202CCCCUS33AXXXN}{3:{121:c8b66b47-2bd9-48fe-be90-93c2096f27d2}}{4:\n" +
             ":20:987\n" +
             ":21:090525/123COV\n" +
             ":13C:/SNDTIME/1249+0200\n" +
@@ -23,7 +30,7 @@ public class TranslateMtToMx {
     public static void main(String[] args) throws Exception {
         TranslateMtToMx mtToMx = new TranslateMtToMx();
         ArrayList<String> data = mtToMx.parseSwiftTo5Block(messageMt202);
-        System.out.println(">>>>>>>>>Kiem tra data:\n" + data);
+//        System.out.println(">>>>>>>>>Kiem tra data:\n" + data);
 
         SwiftMsgProcessor processor = new SwiftMsgProcessor();
         ArrayList<String> block1 = processor.ParseHeaderBlock(data.get(0));
@@ -52,6 +59,27 @@ public class TranslateMtToMx {
         for (TagBlock5 tb5: block5) {
             System.out.println(tb5.getName() + ":" + tb5.getValue());
         }
+
+        // Create SwiftMessage
+        SwiftMessage swiftMessage = new SwiftMessage();
+        swiftMessage.setBlock1(block1);
+        swiftMessage.setBlock2(block2);
+        swiftMessage.setBlock3(block3);
+        swiftMessage.setBlock4(block4);
+        swiftMessage.setBlock5(block5);
+
+        // Translate to MT
+
+        JAXBContext contextObj = JAXBContext.newInstance(Document.class);
+
+        Marshaller marshallerObj = contextObj.createMarshaller();
+        marshallerObj.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+        Mt202ToPacs009 mt202ToPacs009 = new Mt202ToPacs009();
+        Document document = mt202ToPacs009.translateToMxObject(swiftMessage);
+
+
+        marshallerObj.marshal(document, new FileOutputStream("question.xml"));
     }
 
     public SwiftMessage parseMsgStringToObject(String messageString) {

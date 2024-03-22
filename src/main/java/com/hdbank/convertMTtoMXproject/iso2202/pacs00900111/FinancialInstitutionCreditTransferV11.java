@@ -134,4 +134,11 @@ public class FinancialInstitutionCreditTransferV11 {
         return this.splmtryData;
     }
 
+    public void setCdtTrfTxInf(List<CreditTransferTransaction62> cdtTrfTxInf) {
+        this.cdtTrfTxInf = cdtTrfTxInf;
+    }
+
+    public void setSplmtryData(List<SupplementaryData1> splmtryData) {
+        this.splmtryData = splmtryData;
+    }
 }

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class SwiftMessage {
     ArrayList<String> block1 = new ArrayList<>();
     ArrayList<String> block2 = new ArrayList<>();
-    ArrayList<String> block3 = new ArrayList<>();
-    ArrayList<String> block4 = new ArrayList<>();
-    ArrayList<String> block5 = new ArrayList<>();
+    ArrayList<TagBlock3> block3 = new ArrayList<>();
+    ArrayList<TagBlock4> block4 = new ArrayList<>();
+    ArrayList<TagBlock5> block5 = new ArrayList<>();
 }
