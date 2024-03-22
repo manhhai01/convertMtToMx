@@ -1,16 +1,14 @@
 package com.hdbank.convertMTtoMXproject.demo;
 
-import gr.datamation.mt.common.InvalidMessageFormatException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
 public class TranslateMtToMx {
 
     Logger logger = LoggerFactory.getLogger(TranslateMtToMx.class);
-    private static final String messageMt202 = "{1:F01AAAABEBBAXXX0000000000}{2:I202CCCCUS33AXXXN}{3:{121:c8b66b47-2bd9-48fe-be90-93c2096f27d2}}{4:\n" +
+    private static final String messageMt202 = "{1:F01AAAABEBBAXXX0000000000}{2:I202CCCCUS33AXXXN}{1:F01COPZBEB0AXXX0377002682}{3:{121:c8b66b47-2bd9-48fe-be90-93c2096f27d2}}{4:\n" +
             ":20:987\n" +
             ":21:090525/123COV\n" +
             ":13C:/SNDTIME/1249+0200\n" +
@@ -25,22 +23,35 @@ public class TranslateMtToMx {
     public static void main(String[] args) throws Exception {
         TranslateMtToMx mtToMx = new TranslateMtToMx();
         ArrayList<String> data = mtToMx.parseSwiftTo5Block(messageMt202);
-        System.out.println("Kiem tra data:\n" + data);
+        System.out.println(">>>>>>>>>Kiem tra data:\n" + data);
 
         SwiftMsgProcessor processor = new SwiftMsgProcessor();
         ArrayList<String> block1 = processor.ParseHeaderBlock(data.get(0));
-        System.out.println("Kiem tra block 1:\n" + block1);
+        System.out.println(">>>>>>>>>Kiem tra block 1:\n" + block1);
 
         ArrayList<String> block2 = processor.parseApplicationHeaderBlock(data.get(1));
-        System.out.println("Kiem tra block 2:\n" + block2);
+        System.out.println(">>>>>>>>>Kiem tra block 2:\n" + block2);
 
         ArrayList<TagBlock3> block3 = processor.ParseUserHeaderBlock(data.get(2));
-        System.out.println("Kiem tra block 3:");
+        System.out.println(">>>>>>>>>Kiem tra block 3:");
         for (TagBlock3 tb3: block3) {
             System.out.println(tb3.getName() + ":" + tb3.getValue());
         }
 
+        ArrayList<TagBlock4> block4 = processor.ParseTextBlock(data.get(3));
+        System.out.println(">>>>>>>>>Kiem tra block 4:");
+        for (TagBlock4 tb4: block4) {
+            System.out.println(tb4.getFieldName() + ":");
+            for(int i = 0; i < tb4.getFieldData().size(); i++) {
+                System.out.println(tb4.getFieldData().get(i));
+            }
+        }
 
+        ArrayList<TagBlock5> block5 = processor.ParseTrailerBlock(data.get(4));
+        System.out.println(">>>>>>>>>Kiem tra block 5:");
+        for (TagBlock5 tb5: block5) {
+            System.out.println(tb5.getName() + ":" + tb5.getValue());
+        }
     }
 
     public SwiftMessage parseMsgStringToObject(String messageString) {

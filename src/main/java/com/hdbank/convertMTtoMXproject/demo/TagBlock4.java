@@ -6,15 +6,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TagSwift {
+public class TagBlock4 {
     private String fieldName = "";
     private ArrayList<?> fieldData = new ArrayList<>();
-
-
 }

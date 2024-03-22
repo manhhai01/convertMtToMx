@@ -1,12 +1,5 @@
 package com.hdbank.convertMTtoMXproject.demo;
-
-import gr.datamation.mt.common.InvalidMessageFormatException;
-import gr.datamation.mt.common.Tag;
-import gr.datamation.mt.validator.SwiftMsgUtils;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Vector;
 
 public class SwiftMsgProcessor {
@@ -163,7 +156,125 @@ public class SwiftMsgProcessor {
         return outRowTag;
     }
 
+    public ArrayList<TagBlock4> ParseTextBlock(String block4) {
+        block4 = block4.replaceFirst("(?s)(\\{4:)?(.*)-}", "$2");
+        ArrayList<TagBlock4> tagList = SwiftMsgUtils.createTagList(block4, "\n");
+        return tagList;
+    }
 
+    public ArrayList<TagBlock5> ParseTrailerBlock(String block5) {
+        String tagCHK = "";
+        String tagMAC = "";
+        String tagTNG = "";
+        String tagPDE = "";
+        String tagSYS = "";
+        String tagPDM = "";
+        String tagDLM = "";
+        String tagPAC = "";
+        String tagMRF = "";
+        ArrayList<TagBlock5> outRowTag = new ArrayList<>();
+        if (block5 != null) {
+            int startCHK = block5.indexOf("CHK:");
+            int startMAC;
+            if (startCHK != -1) {
+                startMAC = block5.indexOf("}", block5.indexOf("CHK:"));
+                tagCHK = block5.substring(startCHK + 4, startMAC);
+            }
+
+            startMAC = block5.indexOf("MAC:");
+            int startTNG;
+            if (startMAC != -1) {
+                startTNG = block5.indexOf("}", block5.indexOf("MAC:"));
+                tagMAC = block5.substring(startMAC + 4, startTNG);
+            }
+
+            startTNG = block5.indexOf("TNG:");
+            int startPDE;
+            if (startTNG != -1) {
+                startPDE = block5.indexOf("}", block5.indexOf("TNG:"));
+                tagTNG = block5.substring(startTNG + 4, startPDE);
+            }
+
+            startPDE = block5.indexOf("PDE:");
+            int startSYS;
+            if (startPDE != -1) {
+                startSYS = block5.indexOf("}", block5.indexOf("PDE:"));
+                tagPDE = block5.substring(startPDE + 4, startSYS);
+            }
+
+            startSYS = block5.indexOf("SYS:");
+            int startPDM;
+            if (startSYS != -1) {
+                startPDM = block5.indexOf("}", block5.indexOf("SYS:"));
+                tagSYS = block5.substring(startSYS + 4, startPDM);
+            }
+
+            startPDM = block5.indexOf("PDM:");
+            int startDLM;
+            if (startPDM != -1) {
+                startDLM = block5.indexOf("}", block5.indexOf("PDM:"));
+                tagPDM = block5.substring(startPDM + 4, startDLM);
+            }
+
+            startDLM = block5.indexOf("DLM:");
+            int startPAC;
+            if (startDLM != -1) {
+                startPAC = block5.indexOf("}", block5.indexOf("DLM:"));
+                tagDLM = block5.substring(startDLM + 4, startPAC);
+            }
+
+            startPAC = block5.indexOf("PAC:");
+            int startMRF;
+            if (startPAC != -1) {
+                startMRF = block5.indexOf("}", block5.indexOf("PAC:"));
+                tagPAC = block5.substring(startPAC + 4, startMRF);
+            }
+
+            startMRF = block5.indexOf("MRF:");
+            if (startMRF != -1) {
+                int endMRF = block5.indexOf("}", block5.indexOf("MRF:"));
+                tagMRF = block5.substring(startMRF + 4, endMRF);
+            }
+
+            if (!tagCHK.equalsIgnoreCase("")) {
+                outRowTag.add(new TagBlock5("CHK", tagCHK));
+            }
+
+            if (!tagMAC.equalsIgnoreCase("")) {
+                outRowTag.add(new TagBlock5("MAC", tagMAC));
+            }
+
+            if (startTNG > -1) {
+                outRowTag.add(new TagBlock5("TNG", tagTNG));
+            }
+
+            if (startPDE > -1) {
+                outRowTag.add(new TagBlock5("PDE", tagPDE));
+            }
+
+            if (startSYS > -1) {
+                outRowTag.add(new TagBlock5("SYS", tagSYS));
+            }
+
+            if (startPDM > -1) {
+                outRowTag.add(new TagBlock5("PDM", tagPDM));
+            }
+
+            if (startDLM > -1) {
+                outRowTag.add(new TagBlock5("DLM", tagDLM));
+            }
+
+            if (startPAC > -1) {
+                outRowTag.add(new TagBlock5("PAC", tagPAC));
+            }
+
+            if (startMRF > -1) {
+                outRowTag.add(new TagBlock5("MRF", tagMRF));
+            }
+        }
+
+        return outRowTag;
+    }
 
     public boolean checkCategory(String msgType) {
         char categ = msgType.charAt(0);
